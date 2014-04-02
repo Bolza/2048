@@ -1,6 +1,9 @@
 function HTMLActuator() {
   this.tileContainer    = document.querySelector(".tile-container");
-  this.scoreContainer   = document.querySelector(".score-container");
+  
+  this.scoreContainer1   = document.querySelector("#p1-score");
+  this.scoreContainer2   = document.querySelector("#p2-score");
+  
   this.bestContainer    = document.querySelector(".best-container");
   this.messageContainer = document.querySelector(".game-message");
 
@@ -21,7 +24,7 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
       });
     });
 
-    self.updateScore(metadata.score);
+    self.updateScore(metadata);
     self.updateBestScore(metadata.bestScore);
 
     if (metadata.terminated) {
@@ -103,13 +106,22 @@ HTMLActuator.prototype.positionClass = function (position) {
   return "tile-position-" + position.x + "-" + position.y;
 };
 
-HTMLActuator.prototype.updateScore = function (score) {
-  this.clearContainer(this.scoreContainer);
+HTMLActuator.prototype.updateActivePlayer = function (index) {
+  this.scoreContainer1.classList.remove('active');
+  this.scoreContainer2.classList.remove('active');
+  this['scoreContainer'+(index+1)].classList.add('active');
+}
 
-  var difference = score - this.score;
-  this.score = score;
+HTMLActuator.prototype.updateScore = function (meta) {
+  this.clearContainer(this.scoreContainer1);
+  this.clearContainer(this.scoreContainer2);
 
-  this.scoreContainer.textContent = this.score;
+  var difference = 0;//meta.score - this.score;
+  //this.score = score;
+
+  this.scoreContainer1.textContent = meta.players ? meta.players[0].score : 0;
+  this.scoreContainer2.textContent = meta.players ? meta.players[1].score : 0;
+
 
   if (difference > 0) {
     var addition = document.createElement("div");
